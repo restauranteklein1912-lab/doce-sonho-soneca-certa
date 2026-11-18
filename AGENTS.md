@@ -28,3 +28,9 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- All UI copy lives in `src/i18n/strings.ts` (library articles in `src/lib/content.ts`) so the app can be translated; never hardcode interface text in components.
+- Premium limits are enforced in the database (RLS + `is_premium()` + baby-limit trigger); UI gating in `src/config.ts` is only presentation.
+- Hotmart webhook is the TanStack server route `/api/public/hotmart-webhook` (not an Edge Function), verified by the `HOTMART_HOTTOK` secret.
+- Sleep reference table and schedule math live in `src/lib/sleep.ts` with tests next to it.
