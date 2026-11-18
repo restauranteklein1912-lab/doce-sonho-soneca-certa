@@ -10,33 +10,256 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as CalculadoraRouteImport } from './routes/calculadora'
+import { Route as CriarContaRouteImport } from './routes/criar-conta'
+import { Route as EntrarRouteImport } from './routes/entrar'
+import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
+import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
+import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
+import { Route as AuthenticatedAppBibliotecaRouteImport } from './routes/_authenticated/app.biblioteca'
+import { Route as AuthenticatedAppContaRouteImport } from './routes/_authenticated/app.conta'
+import { Route as AuthenticatedAppCuidadorRouteImport } from './routes/_authenticated/app.cuidador'
+import { Route as AuthenticatedAppDiarioRouteImport } from './routes/_authenticated/app.diario'
+import { Route as AuthenticatedAppHoraDeDormirRouteImport } from './routes/_authenticated/app.hora-de-dormir'
+import { Route as AuthenticatedAppRelatoriosRouteImport } from './routes/_authenticated/app.relatorios'
+import { Route as AuthenticatedAppRotinaRouteImport } from './routes/_authenticated/app.rotina'
+import { Route as AuthenticatedAppSonsRouteImport } from './routes/_authenticated/app.sons'
+import { Route as ApiPublicHotmartWebhookRouteImport } from './routes/api/public/hotmart-webhook'
+import { Route as AuthenticatedAppBibliotecaIndexRouteImport } from './routes/_authenticated/app.biblioteca.index'
+import { Route as AuthenticatedAppBibliotecaSlugRouteImport } from './routes/_authenticated/app.biblioteca.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalculadoraRoute = CalculadoraRouteImport.update({
+  id: '/calculadora',
+  path: '/calculadora',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CriarContaRoute = CriarContaRouteImport.update({
+  id: '/criar-conta',
+  path: '/criar-conta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EntrarRoute = EntrarRouteImport.update({
+  id: '/entrar',
+  path: '/entrar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
+  id: '/redefinir-senha',
+  path: '/redefinir-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppBibliotecaRoute =
+  AuthenticatedAppBibliotecaRouteImport.update({
+    id: '/biblioteca',
+    path: '/biblioteca',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppContaRoute = AuthenticatedAppContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppCuidadorRoute =
+  AuthenticatedAppCuidadorRouteImport.update({
+    id: '/cuidador',
+    path: '/cuidador',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppDiarioRoute = AuthenticatedAppDiarioRouteImport.update({
+  id: '/diario',
+  path: '/diario',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppHoraDeDormirRoute =
+  AuthenticatedAppHoraDeDormirRouteImport.update({
+    id: '/hora-de-dormir',
+    path: '/hora-de-dormir',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppRelatoriosRoute =
+  AuthenticatedAppRelatoriosRouteImport.update({
+    id: '/relatorios',
+    path: '/relatorios',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppRotinaRoute = AuthenticatedAppRotinaRouteImport.update({
+  id: '/rotina',
+  path: '/rotina',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppSonsRoute = AuthenticatedAppSonsRouteImport.update({
+  id: '/sons',
+  path: '/sons',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const ApiPublicHotmartWebhookRoute = ApiPublicHotmartWebhookRouteImport.update({
+  id: '/api/public/hotmart-webhook',
+  path: '/api/public/hotmart-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAppBibliotecaIndexRoute =
+  AuthenticatedAppBibliotecaIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAppBibliotecaRoute,
+  } as any)
+const AuthenticatedAppBibliotecaSlugRoute =
+  AuthenticatedAppBibliotecaSlugRouteImport.update({
+    id: '/$slug',
+    path: '/$slug',
+    getParentRoute: () => AuthenticatedAppBibliotecaRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/calculadora': typeof CalculadoraRoute
+  '/criar-conta': typeof CriarContaRoute
+  '/entrar': typeof EntrarRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
+  '/app': typeof AuthenticatedAppRouteWithChildren
+  '/app/biblioteca': typeof AuthenticatedAppBibliotecaRouteWithChildren
+  '/app/conta': typeof AuthenticatedAppContaRoute
+  '/app/cuidador': typeof AuthenticatedAppCuidadorRoute
+  '/app/diario': typeof AuthenticatedAppDiarioRoute
+  '/app/hora-de-dormir': typeof AuthenticatedAppHoraDeDormirRoute
+  '/app/relatorios': typeof AuthenticatedAppRelatoriosRoute
+  '/app/rotina': typeof AuthenticatedAppRotinaRoute
+  '/app/sons': typeof AuthenticatedAppSonsRoute
+  '/api/public/hotmart-webhook': typeof ApiPublicHotmartWebhookRoute
+  '/app/': typeof AuthenticatedAppIndexRoute
+  '/app/biblioteca/$slug': typeof AuthenticatedAppBibliotecaSlugRoute
+  '/app/biblioteca/': typeof AuthenticatedAppBibliotecaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/calculadora': typeof CalculadoraRoute
+  '/criar-conta': typeof CriarContaRoute
+  '/entrar': typeof EntrarRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
+  '/app/conta': typeof AuthenticatedAppContaRoute
+  '/app/cuidador': typeof AuthenticatedAppCuidadorRoute
+  '/app/diario': typeof AuthenticatedAppDiarioRoute
+  '/app/hora-de-dormir': typeof AuthenticatedAppHoraDeDormirRoute
+  '/app/relatorios': typeof AuthenticatedAppRelatoriosRoute
+  '/app/rotina': typeof AuthenticatedAppRotinaRoute
+  '/app/sons': typeof AuthenticatedAppSonsRoute
+  '/api/public/hotmart-webhook': typeof ApiPublicHotmartWebhookRoute
+  '/app': typeof AuthenticatedAppIndexRoute
+  '/app/biblioteca/$slug': typeof AuthenticatedAppBibliotecaSlugRoute
+  '/app/biblioteca': typeof AuthenticatedAppBibliotecaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/calculadora': typeof CalculadoraRoute
+  '/criar-conta': typeof CriarContaRoute
+  '/entrar': typeof EntrarRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
+  '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
+  '/_authenticated/app/biblioteca': typeof AuthenticatedAppBibliotecaRouteWithChildren
+  '/_authenticated/app/conta': typeof AuthenticatedAppContaRoute
+  '/_authenticated/app/cuidador': typeof AuthenticatedAppCuidadorRoute
+  '/_authenticated/app/diario': typeof AuthenticatedAppDiarioRoute
+  '/_authenticated/app/hora-de-dormir': typeof AuthenticatedAppHoraDeDormirRoute
+  '/_authenticated/app/relatorios': typeof AuthenticatedAppRelatoriosRoute
+  '/_authenticated/app/rotina': typeof AuthenticatedAppRotinaRoute
+  '/_authenticated/app/sons': typeof AuthenticatedAppSonsRoute
+  '/api/public/hotmart-webhook': typeof ApiPublicHotmartWebhookRoute
+  '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/_authenticated/app/biblioteca/$slug': typeof AuthenticatedAppBibliotecaSlugRoute
+  '/_authenticated/app/biblioteca/': typeof AuthenticatedAppBibliotecaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/calculadora'
+    | '/criar-conta'
+    | '/entrar'
+    | '/redefinir-senha'
+    | '/app'
+    | '/app/biblioteca'
+    | '/app/conta'
+    | '/app/cuidador'
+    | '/app/diario'
+    | '/app/hora-de-dormir'
+    | '/app/relatorios'
+    | '/app/rotina'
+    | '/app/sons'
+    | '/api/public/hotmart-webhook'
+    | '/app/'
+    | '/app/biblioteca/$slug'
+    | '/app/biblioteca/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/calculadora'
+    | '/criar-conta'
+    | '/entrar'
+    | '/redefinir-senha'
+    | '/app/conta'
+    | '/app/cuidador'
+    | '/app/diario'
+    | '/app/hora-de-dormir'
+    | '/app/relatorios'
+    | '/app/rotina'
+    | '/app/sons'
+    | '/api/public/hotmart-webhook'
+    | '/app'
+    | '/app/biblioteca/$slug'
+    | '/app/biblioteca'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/calculadora'
+    | '/criar-conta'
+    | '/entrar'
+    | '/redefinir-senha'
+    | '/_authenticated/app'
+    | '/_authenticated/app/biblioteca'
+    | '/_authenticated/app/conta'
+    | '/_authenticated/app/cuidador'
+    | '/_authenticated/app/diario'
+    | '/_authenticated/app/hora-de-dormir'
+    | '/_authenticated/app/relatorios'
+    | '/_authenticated/app/rotina'
+    | '/_authenticated/app/sons'
+    | '/api/public/hotmart-webhook'
+    | '/_authenticated/app/'
+    | '/_authenticated/app/biblioteca/$slug'
+    | '/_authenticated/app/biblioteca/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  CalculadoraRoute: typeof CalculadoraRoute
+  CriarContaRoute: typeof CriarContaRoute
+  EntrarRoute: typeof EntrarRoute
+  RedefinirSenhaRoute: typeof RedefinirSenhaRoute
+  ApiPublicHotmartWebhookRoute: typeof ApiPublicHotmartWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +271,197 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculadora': {
+      id: '/calculadora'
+      path: '/calculadora'
+      fullPath: '/calculadora'
+      preLoaderRoute: typeof CalculadoraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/criar-conta': {
+      id: '/criar-conta'
+      path: '/criar-conta'
+      fullPath: '/criar-conta'
+      preLoaderRoute: typeof CriarContaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/entrar': {
+      id: '/entrar'
+      path: '/entrar'
+      fullPath: '/entrar'
+      preLoaderRoute: typeof EntrarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/redefinir-senha': {
+      id: '/redefinir-senha'
+      path: '/redefinir-senha'
+      fullPath: '/redefinir-senha'
+      preLoaderRoute: typeof RedefinirSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/app': {
+      id: '/_authenticated/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AuthenticatedAppRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/app/': {
+      id: '/_authenticated/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/biblioteca': {
+      id: '/_authenticated/app/biblioteca'
+      path: '/biblioteca'
+      fullPath: '/app/biblioteca'
+      preLoaderRoute: typeof AuthenticatedAppBibliotecaRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/conta': {
+      id: '/_authenticated/app/conta'
+      path: '/conta'
+      fullPath: '/app/conta'
+      preLoaderRoute: typeof AuthenticatedAppContaRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/cuidador': {
+      id: '/_authenticated/app/cuidador'
+      path: '/cuidador'
+      fullPath: '/app/cuidador'
+      preLoaderRoute: typeof AuthenticatedAppCuidadorRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/diario': {
+      id: '/_authenticated/app/diario'
+      path: '/diario'
+      fullPath: '/app/diario'
+      preLoaderRoute: typeof AuthenticatedAppDiarioRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/hora-de-dormir': {
+      id: '/_authenticated/app/hora-de-dormir'
+      path: '/hora-de-dormir'
+      fullPath: '/app/hora-de-dormir'
+      preLoaderRoute: typeof AuthenticatedAppHoraDeDormirRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/relatorios': {
+      id: '/_authenticated/app/relatorios'
+      path: '/relatorios'
+      fullPath: '/app/relatorios'
+      preLoaderRoute: typeof AuthenticatedAppRelatoriosRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/rotina': {
+      id: '/_authenticated/app/rotina'
+      path: '/rotina'
+      fullPath: '/app/rotina'
+      preLoaderRoute: typeof AuthenticatedAppRotinaRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/sons': {
+      id: '/_authenticated/app/sons'
+      path: '/sons'
+      fullPath: '/app/sons'
+      preLoaderRoute: typeof AuthenticatedAppSonsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/api/public/hotmart-webhook': {
+      id: '/api/public/hotmart-webhook'
+      path: '/api/public/hotmart-webhook'
+      fullPath: '/api/public/hotmart-webhook'
+      preLoaderRoute: typeof ApiPublicHotmartWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/app/biblioteca/': {
+      id: '/_authenticated/app/biblioteca/'
+      path: '/'
+      fullPath: '/app/biblioteca/'
+      preLoaderRoute: typeof AuthenticatedAppBibliotecaIndexRouteImport
+      parentRoute: typeof AuthenticatedAppBibliotecaRoute
+    }
+    '/_authenticated/app/biblioteca/$slug': {
+      id: '/_authenticated/app/biblioteca/$slug'
+      path: '/$slug'
+      fullPath: '/app/biblioteca/$slug'
+      preLoaderRoute: typeof AuthenticatedAppBibliotecaSlugRouteImport
+      parentRoute: typeof AuthenticatedAppBibliotecaRoute
+    }
   }
 }
 
+interface AuthenticatedAppBibliotecaRouteChildren {
+  AuthenticatedAppBibliotecaSlugRoute: typeof AuthenticatedAppBibliotecaSlugRoute
+  AuthenticatedAppBibliotecaIndexRoute: typeof AuthenticatedAppBibliotecaIndexRoute
+}
+
+const AuthenticatedAppBibliotecaRouteChildren: AuthenticatedAppBibliotecaRouteChildren =
+  {
+    AuthenticatedAppBibliotecaSlugRoute: AuthenticatedAppBibliotecaSlugRoute,
+    AuthenticatedAppBibliotecaIndexRoute: AuthenticatedAppBibliotecaIndexRoute,
+  }
+
+const AuthenticatedAppBibliotecaRouteWithChildren =
+  AuthenticatedAppBibliotecaRoute._addFileChildren(
+    AuthenticatedAppBibliotecaRouteChildren,
+  )
+
+interface AuthenticatedAppRouteChildren {
+  AuthenticatedAppBibliotecaRoute: typeof AuthenticatedAppBibliotecaRouteWithChildren
+  AuthenticatedAppContaRoute: typeof AuthenticatedAppContaRoute
+  AuthenticatedAppCuidadorRoute: typeof AuthenticatedAppCuidadorRoute
+  AuthenticatedAppDiarioRoute: typeof AuthenticatedAppDiarioRoute
+  AuthenticatedAppHoraDeDormirRoute: typeof AuthenticatedAppHoraDeDormirRoute
+  AuthenticatedAppRelatoriosRoute: typeof AuthenticatedAppRelatoriosRoute
+  AuthenticatedAppRotinaRoute: typeof AuthenticatedAppRotinaRoute
+  AuthenticatedAppSonsRoute: typeof AuthenticatedAppSonsRoute
+  AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
+}
+
+const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
+  AuthenticatedAppBibliotecaRoute: AuthenticatedAppBibliotecaRouteWithChildren,
+  AuthenticatedAppContaRoute: AuthenticatedAppContaRoute,
+  AuthenticatedAppCuidadorRoute: AuthenticatedAppCuidadorRoute,
+  AuthenticatedAppDiarioRoute: AuthenticatedAppDiarioRoute,
+  AuthenticatedAppHoraDeDormirRoute: AuthenticatedAppHoraDeDormirRoute,
+  AuthenticatedAppRelatoriosRoute: AuthenticatedAppRelatoriosRoute,
+  AuthenticatedAppRotinaRoute: AuthenticatedAppRotinaRoute,
+  AuthenticatedAppSonsRoute: AuthenticatedAppSonsRoute,
+  AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
+}
+
+const AuthenticatedAppRouteWithChildren =
+  AuthenticatedAppRoute._addFileChildren(AuthenticatedAppRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAppRoute: typeof AuthenticatedAppRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAppRoute: AuthenticatedAppRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  CalculadoraRoute: CalculadoraRoute,
+  CriarContaRoute: CriarContaRoute,
+  EntrarRoute: EntrarRoute,
+  RedefinirSenhaRoute: RedefinirSenhaRoute,
+  ApiPublicHotmartWebhookRoute: ApiPublicHotmartWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
