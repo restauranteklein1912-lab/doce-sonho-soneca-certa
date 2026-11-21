@@ -75,7 +75,7 @@ function Diario() {
                   <li key={it.type === "log" ? it.log.id : it.w.id} className="flex items-start gap-3 p-4">
                     {it.type === "log" ? <LogRow log={it.log} /> : <WakeRow w={it.w} />}
                     <div className="ml-auto flex shrink-0 gap-1">
-                      <Button size="icon" variant="ghost" aria-label={s.common.edit} onClick={() => it.type === "log" ? setEditing(it.log) : setWakeOpen(it.w)}><Pencil /></Button>
+                      <Button size="icon" variant="ghost" aria-label={s.common.edit} title={it.type === "log" ? "Editar soneca" : "Editar despertar"} onClick={() => it.type === "log" ? setEditing(it.log) : setWakeOpen(it.w)}><Pencil /></Button>
                       <Button size="icon" variant="ghost" aria-label={s.common.delete} onClick={() => setToDelete(it)}><Trash2 /></Button>
                     </div>
                   </li>
