@@ -1,11 +1,12 @@
 /**
- * Configurações editáveis do Doce Sonho.
- * CHECKOUT_URL: link do checkout da Hotmart. Pode ser definido pela variável
- * VITE_HOTMART_CHECKOUT_URL ou editado diretamente aqui.
+ * Links oficiais de checkout do Doce Sonho Premium na Hotmart.
+ * O período de teste grátis é administrado pela oferta configurada na Hotmart.
  */
-export const CHECKOUT_URL: string =
-  (import.meta.env["VITE_HOTMART_CHECKOUT_URL"] as string | undefined) ||
-  "https://pay.hotmart.com/SEU_PRODUTO";
+export const HOTMART_CHECKOUT_MONTHLY_URL =
+  "https://pay.hotmart.com/C108598810D?off=i1qgmmj1";
+
+export const HOTMART_CHECKOUT_ANNUAL_URL =
+  "https://pay.hotmart.com/C108598810D?off=gjv109ka";
 
 export const FREE_LIMITS = {
   babies: 1,
