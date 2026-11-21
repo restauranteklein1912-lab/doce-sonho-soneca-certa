@@ -55,13 +55,9 @@ function Inicio() {
     return { active, slept, naps, wakeups, lastEnd: lastEnded?.end_at ? new Date(lastEnded.end_at) : null };
   }, [q.data, Math.floor(now / 60000)]);
 
-  if (!baby) return null;
-  if (q.isLoading) return <Loading />;
-  if (q.isError || !data) return <ErrorState onRetry={() => q.refetch()} />;
-
-  const ref = refForAge(ageInMonths(baby.birth_date));
-  const nextFrom = data.lastEnd ? new Date(data.lastEnd.getTime() + ref.wakeMin * 60000) : null;
-  const nextTo = data.lastEnd ? new Date(data.lastEnd.getTime() + ref.wakeMax * 60000) : null;
+  const ref = baby ? refForAge(ageInMonths(baby.birth_date)) : null;
+  const nextFrom = data?.lastEnd && ref ? new Date(data.lastEnd.getTime() + ref.wakeMin * 60000) : null;
+  const nextTo = data?.lastEnd && ref ? new Date(data.lastEnd.getTime() + ref.wakeMax * 60000) : null;
 
   async function enableReminders() {
     if (!("Notification" in window)) {
@@ -79,7 +75,7 @@ function Inicio() {
   }
 
   useEffect(() => {
-    if (!remindersEnabled || notificationPermission !== "granted" || !nextFrom || data.active) return;
+    if (!remindersEnabled || notificationPermission !== "granted" || !nextFrom || data?.active || !baby) return;
     const notifyAt = nextFrom.getTime() - 15 * 60000;
     const delay = notifyAt - Date.now();
     if (delay <= 0) return;
@@ -90,7 +86,11 @@ function Inicio() {
       });
     }, delay);
     return () => window.clearTimeout(timer);
-  }, [remindersEnabled, notificationPermission, nextFrom?.getTime(), data.active?.id, baby.id, baby.name]);
+  }, [remindersEnabled, notificationPermission, nextFrom?.getTime(), data?.active?.id, baby?.id, baby?.name]);
+
+  if (!baby) return null;
+  if (q.isLoading) return <Loading />;
+  if (q.isError || !data) return <ErrorState onRetry={() => q.refetch()} />;
 
   async function start(kind: "nap" | "night") {
     setBusy(true);
