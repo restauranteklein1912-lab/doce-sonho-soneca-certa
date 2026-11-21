@@ -121,6 +121,7 @@ function Inicio() {
       </div>
 
       <section className="card-soft overflow-hidden p-5">
+        <h2 className="mb-3 text-center text-sm font-semibold text-muted-foreground">Cronômetro do sono</h2>
         {data.active ? (
           <div className="flex flex-col items-center gap-4 text-center">
             <p className="text-sm text-muted-foreground">{s.home.sleeping(data.active.kind === "nap" ? s.diary.nap : s.diary.night)}</p>
