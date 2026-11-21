@@ -21,7 +21,7 @@ export const Route = createFileRoute("/entrar")({
 });
 
 function Entrar() {
-  const requestedPlan = new URLSearchParams(window.location.search).get("plano");
+  const requestedPlan = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("plano") : null;
   const destination = requestedPlan === "mensal" || requestedPlan === "anual" ? `/app/conta?plano=${requestedPlan}` : "/app";
   const [mode, setMode] = useState<"login" | "forgot">("login");
   const [email, setEmail] = useState("");
