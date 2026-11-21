@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { AlarmClock, Moon, Sun, BellRing } from "lucide-react";
+import { AlarmClock, Moon, Sun, BellRing, Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAppData } from "@/lib/app-data";
 import { useInvalidateLogs, useLogs } from "@/lib/logs";
@@ -31,6 +31,12 @@ function Inicio() {
   const invalidate = useInvalidateLogs();
   const now = useNow();
   const [busy, setBusy] = useState(false);
+  const [remindersEnabled, setRemindersEnabled] = useState(false);
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission | "unsupported">("default");
+
+  useEffect(() => {
+    setNotificationPermission("Notification" in window ? Notification.permission : "unsupported");
+  }, []);
 
   const data = useMemo(() => {
     if (!q.data) return null;
@@ -56,6 +62,35 @@ function Inicio() {
   const ref = refForAge(ageInMonths(baby.birth_date));
   const nextFrom = data.lastEnd ? new Date(data.lastEnd.getTime() + ref.wakeMin * 60000) : null;
   const nextTo = data.lastEnd ? new Date(data.lastEnd.getTime() + ref.wakeMax * 60000) : null;
+
+  async function enableReminders() {
+    if (!("Notification" in window)) {
+      toast.error("Este navegador não oferece suporte a notificações.");
+      return;
+    }
+    const permission = await Notification.requestPermission();
+    setNotificationPermission(permission);
+    if (permission === "granted") {
+      setRemindersEnabled(true);
+      toast.success("Lembretes ativados enquanto o aplicativo estiver aberto.");
+    } else {
+      toast.error("Permita as notificações nas configurações do navegador.");
+    }
+  }
+
+  useEffect(() => {
+    if (!remindersEnabled || notificationPermission !== "granted" || !nextFrom || data.active) return;
+    const notifyAt = nextFrom.getTime() - 15 * 60000;
+    const delay = notifyAt - Date.now();
+    if (delay <= 0) return;
+    const timer = window.setTimeout(() => {
+      new Notification("Doce Sonho · Próxima soneca", {
+        body: `A janela estimada da próxima soneca de ${baby.name} começa por volta de ${hhmm(nextFrom)}.`,
+        tag: `doce-sonho-${baby.id}-next-nap`,
+      });
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [remindersEnabled, notificationPermission, nextFrom?.getTime(), data.active?.id, baby.id, baby.name]);
 
   async function start(kind: "nap" | "night") {
     setBusy(true);
@@ -101,6 +136,20 @@ function Inicio() {
             <Button size="lg" variant="lavender" className="h-16 text-base" onClick={() => start("night")} disabled={busy}><Moon className="h-5 w-5" /> {s.home.startNight}</Button>
           </div>
         )}
+      </section>
+
+      <section className="card-soft flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-3">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-lavender text-lavender-foreground"><Bell className="h-5 w-5" aria-hidden /></span>
+          <div>
+            <h2 className="font-semibold">Lembrete da próxima soneca</h2>
+            <p className="text-sm text-muted-foreground">Receba um aviso 15 minutos antes da janela estimada.</p>
+            <p className="mt-1 text-xs text-muted-foreground">O aplicativo precisa permanecer aberto para programar este lembrete. Notificações com o app fechado exigem configuração adicional.</p>
+          </div>
+        </div>
+        <Button variant="outline" onClick={enableReminders} disabled={remindersEnabled || notificationPermission === "unsupported"}>
+          {remindersEnabled ? "Lembretes ativados" : notificationPermission === "denied" ? "Permita nas configurações" : "Ativar lembretes"}
+        </Button>
       </section>
 
       <section aria-labelledby="sum">
