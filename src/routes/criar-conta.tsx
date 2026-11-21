@@ -26,6 +26,9 @@ function CriarConta() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const requestedPlan = new URLSearchParams(window.location.search).get("plano");
+  const planQuery = requestedPlan === "mensal" || requestedPlan === "anual" ? `?plano=${requestedPlan}` : "";
+  const destination = `/app/conta${planQuery}`;
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,11 +38,11 @@ function CriarConta() {
     const { data, error } = await supabase.auth.signUp({
       email: email.trim().toLowerCase(),
       password,
-      options: { emailRedirectTo: `${window.location.origin}/app`, data: { display_name: name.trim() } },
+      options: { emailRedirectTo: `${window.location.origin}${destination}`, data: { display_name: name.trim() } },
     });
     setBusy(false);
     if (error) { setErr(error.message); return; }
-    if (data.session) window.location.assign("/app");
+    if (data.session) window.location.assign(destination);
     else setDone(true);
   }
 
@@ -48,7 +51,7 @@ function CriarConta() {
       {done ? (
         <div className="space-y-4">
           <p role="status" className="rounded-xl bg-sky p-4 text-sm text-sky-foreground">{s.auth.checkEmail}</p>
-          <Button asChild className="w-full"><Link to="/entrar">{s.auth.loginCta}</Link></Button>
+          <Button asChild className="w-full"><a href={`/entrar${planQuery}`}>{s.auth.loginCta}</a></Button>
         </div>
       ) : (
         <form onSubmit={onSubmit} className="space-y-4">
@@ -68,7 +71,7 @@ function CriarConta() {
           {err && <p role="alert" className="text-sm text-destructive">{err}</p>}
           <Button type="submit" className="w-full" disabled={busy}>{busy ? s.common.loading : s.auth.signupCta}</Button>
           <p className="text-center text-sm text-muted-foreground">
-            {s.auth.haveAccount} <Link to="/entrar" className="font-semibold text-primary-strong hover:underline">{s.auth.loginCta}</Link>
+            {s.auth.haveAccount} <a href={`/entrar${planQuery}`} className="font-semibold text-primary-strong hover:underline">{s.auth.loginCta}</a>
           </p>
         </form>
       )}
