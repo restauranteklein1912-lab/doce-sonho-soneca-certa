@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +21,8 @@ export const Route = createFileRoute("/entrar")({
 });
 
 function Entrar() {
-  const navigate = useNavigate();
+  const requestedPlan = new URLSearchParams(window.location.search).get("plano");
+  const destination = requestedPlan === "mensal" || requestedPlan === "anual" ? `/app/conta?plano=${requestedPlan}` : "/app";
   const [mode, setMode] = useState<"login" | "forgot">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +35,7 @@ function Entrar() {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setBusy(false);
     if (error) { setMsg(error.message.includes("confirm") ? s.auth.checkEmail : s.auth.invalidLogin); return; }
-    navigate({ to: "/app", replace: true });
+    window.location.assign(destination);
   }
   async function onForgot(e: React.FormEvent) {
     e.preventDefault();
