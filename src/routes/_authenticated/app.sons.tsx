@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { CloudRain, Pause, Play, Waves, Wind, AudioLines } from "lucide-react";
+import { CloudRain, Pause, Play, Waves, Wind, AudioLines, Bluetooth } from "lucide-react";
+import { toast } from "sonner";
 import { SoundPlayer, type SoundId } from "@/lib/sounds";
 import { useAppData } from "@/lib/app-data";
 import { FREE_LIMITS } from "@/config";
@@ -43,12 +44,19 @@ function Sons() {
     return () => clearInterval(t);
   }, [endsAt]);
 
-  function toggle(id: SoundId) {
+  async function toggle(id: SoundId) {
     if (!premium && !FREE_LIMITS.sounds.includes(id)) { setShowPaywall(true); return; }
     player.current = player.current ?? new SoundPlayer();
     if (playing === id) { player.current.stop(); setPlaying(null); setEndsAt(null); return; }
-    player.current.play(id, volume);
-    setPlaying(id);
+    try {
+      await player.current.play(id, volume);
+      setPlaying(id);
+    } catch {
+      player.current.stop();
+      setPlaying(null);
+      toast.error("Não foi possível reproduzir o som. Verifique o volume e tente novamente.");
+      return;
+    }
     setEndsAt(timer === "0" ? null : Date.now() + Number(timer) * 60000);
   }
 
@@ -92,6 +100,13 @@ function Sons() {
             </SelectContent>
           </Select>
           {playing && endsAt && <p className="text-sm text-muted-foreground tabular-nums" aria-live="off">{s.sounds.remaining(rem)}</p>}
+        </div>
+      </section>
+      <section className="card-soft mt-5 flex items-start gap-3 p-4">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sky text-sky-foreground"><Bluetooth className="h-5 w-5" aria-hidden /></span>
+        <div>
+          <h2 className="font-semibold">Ouvir em uma caixinha Bluetooth</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Conecte a caixinha Bluetooth nas configurações de Bluetooth do celular antes de iniciar o som. O Doce Sonho usará automaticamente a saída de áudio selecionada pelo aparelho. Não é necessário parear dentro do aplicativo.</p>
         </div>
       </section>
       {showPaywall && <div className="mt-5"><Paywall compact /></div>}
