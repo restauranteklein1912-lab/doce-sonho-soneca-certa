@@ -26,7 +26,7 @@ function CriarConta() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [done, setDone] = useState(false);
-  const requestedPlan = new URLSearchParams(window.location.search).get("plano");
+  const requestedPlan = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("plano") : null;
   const planQuery = requestedPlan === "mensal" || requestedPlan === "anual" ? `?plano=${requestedPlan}` : "";
   const destination = `/app/conta${planQuery}`;
 
