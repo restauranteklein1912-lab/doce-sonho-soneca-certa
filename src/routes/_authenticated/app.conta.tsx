@@ -9,7 +9,7 @@ import { useAppData } from "@/lib/app-data";
 import { deleteMyAccount } from "@/lib/account.functions";
 import { applyStoredTheme, setTheme } from "@/lib/theme";
 import { ageLabel } from "@/lib/sleep";
-import { CHECKOUT_URL } from "@/config";
+import { HOTMART_CHECKOUT_ANNUAL_URL, HOTMART_CHECKOUT_MONTHLY_URL } from "@/config";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -100,7 +100,21 @@ function Conta() {
               {premium && profile?.premium_until && <p className="text-xs text-muted-foreground">{s.account.premiumUntil(new Date(profile.premium_until).toLocaleDateString("pt-BR"))}</p>}
             </div>
           </div>
-          {!premium && <Button asChild><a href={CHECKOUT_URL} target="_blank" rel="noopener noreferrer">{s.paywall.cta}</a></Button>}
+          {!premium && (
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:min-w-56">
+              <Button asChild className="w-full">
+                <a href={HOTMART_CHECKOUT_MONTHLY_URL} target="_blank" rel="noopener noreferrer">
+                  Mensal · R$ 19,90
+                </a>
+              </Button>
+              <Button asChild variant="outline" className="w-full">
+                <a href={HOTMART_CHECKOUT_ANNUAL_URL} target="_blank" rel="noopener noreferrer">
+                  Anual · R$ 149,90
+                </a>
+              </Button>
+              <p className="text-center text-xs text-muted-foreground">7 dias grátis nos dois planos</p>
+            </div>
+          )}
         </div>
       </Section>
 
