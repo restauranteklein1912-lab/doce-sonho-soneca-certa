@@ -31,12 +31,12 @@ export class SoundPlayer {
   private nodes: AudioNode[] = [];
   private sources: AudioScheduledSourceNode[] = [];
 
-  play(id: SoundId, volume: number) {
+  async play(id: SoundId, volume: number): Promise<void> {
     this.stop();
     const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     this.ctx = this.ctx ?? new Ctx();
     const ctx = this.ctx;
-    void ctx.resume();
+    if (ctx.state !== "running") await ctx.resume();
     const master = ctx.createGain();
     master.gain.value = 0;
     master.gain.linearRampToValueAtTime(volume, ctx.currentTime + 1.5);
