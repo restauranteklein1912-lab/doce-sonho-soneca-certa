@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { premiumActionFor, safeEqual } from "@/lib/hotmart";
+import { premiumActionFor, premiumDaysForOffer, safeEqual } from "@/lib/hotmart";
 
 const Payload = z.object({
   event: z.string().min(1).max(100),
@@ -8,10 +8,11 @@ const Payload = z.object({
   data: z.object({
     buyer: z.object({ email: z.string().email().max(255) }).partial().optional(),
     subscriber: z.object({ email: z.string().email().max(255) }).partial().optional(),
+    purchase: z.object({
+      offer: z.object({ code: z.string().optional() }).passthrough().optional(),
+    }).passthrough().optional(),
   }).passthrough(),
 }).passthrough();
-
-const PREMIUM_DAYS = 35; // mensal + margem; renovações aprovadas estendem o prazo
 
 export const Route = createFileRoute("/api/public/hotmart-webhook")({
   server: {
@@ -34,7 +35,9 @@ export const Route = createFileRoute("/api/public/hotmart-webhook")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const isPremium = action === "activate";
-        const until = isPremium ? new Date(Date.now() + PREMIUM_DAYS * 86400000).toISOString() : null;
+        const offerCode = parsed.data.data.purchase?.offer?.code;
+        const days = premiumDaysForOffer(offerCode);
+        const until = isPremium ? new Date(Date.now() + days * 86400000).toISOString() : null;
 
         const { data: profile, error } = await supabaseAdmin.from("profiles").select("id").eq("email", email).maybeSingle();
         if (error) return new Response("Error", { status: 500 });
