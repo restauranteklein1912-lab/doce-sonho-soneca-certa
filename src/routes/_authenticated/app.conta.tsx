@@ -42,8 +42,13 @@ function Conta() {
   const [removeId, setRemoveId] = useState<string | null>(null);
   const [confirmDel, setConfirmDel] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
+  const [requestedPlan, setRequestedPlan] = useState<"mensal" | "anual" | null>(null);
 
-  useEffect(() => { setDark(applyStoredTheme()); }, []);
+  useEffect(() => {
+    setDark(applyStoredTheme());
+    const plan = new URLSearchParams(window.location.search).get("plano");
+    if (plan === "mensal" || plan === "anual") setRequestedPlan(plan);
+  }, []);
 
   async function saveName(e: React.FormEvent) {
     e.preventDefault();
@@ -92,6 +97,11 @@ function Conta() {
       <PageTitle title={s.account.title} subtitle={email} />
 
       <Section title={s.account.plan}>
+        {requestedPlan && !premium && (
+          <p className="rounded-xl bg-sky p-3 text-sm text-sky-foreground">
+            Você escolheu o plano {requestedPlan}. Confira a opção abaixo e continue para o checkout quando estiver pronto.
+          </p>
+        )}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <span className={`grid h-11 w-11 place-items-center rounded-full ${premium ? "bg-peach text-peach-foreground" : "bg-muted text-muted-foreground"}`}><Crown className="h-5 w-5" aria-hidden /></span>
@@ -104,12 +114,12 @@ function Conta() {
             <div className="flex w-full flex-col gap-2 sm:w-auto sm:min-w-56">
               <Button asChild className="w-full">
                 <a href={HOTMART_CHECKOUT_MONTHLY_URL} target="_blank" rel="noopener noreferrer">
-                  Mensal · R$ 19,90
+                  {requestedPlan === "mensal" ? "Plano escolhido · Mensal · R$ 19,90" : "Mensal · R$ 19,90"}
                 </a>
               </Button>
               <Button asChild variant="outline" className="w-full">
                 <a href={HOTMART_CHECKOUT_ANNUAL_URL} target="_blank" rel="noopener noreferrer">
-                  Anual · R$ 149,90
+                  {requestedPlan === "anual" ? "Plano escolhido · Anual · R$ 149,90" : "Anual · R$ 149,90"}
                 </a>
               </Button>
               <p className="text-center text-xs text-muted-foreground">7 dias grátis nos dois planos</p>
