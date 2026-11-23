@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { Heart, Search } from "lucide-react";
 import { useAppData } from "@/lib/app-data";
 import { useFavorites } from "@/lib/favorites";
-import { AGE_GROUPS, ARTICLES, isArticleFree, type AgeGroup } from "@/lib/content";
+import { AGE_GROUPS, ALL_CONTENT, isArticleFree, type AgeGroup } from "@/lib/content";
 import { Input } from "@/components/ui/input";
 import { Empty, PageTitle } from "@/components/app/States";
 import { PremiumBadge } from "@/components/app/Paywall";
@@ -22,16 +22,17 @@ function Biblioteca() {
   const { premium } = useAppData();
   const { favs, toggle } = useFavorites();
   const [q, setQ] = useState("");
-  const [group, setGroup] = useState<AgeGroup | "all" | "fav">("all");
+  const [group, setGroup] = useState<AgeGroup | "all" | "fav" | "stories">("all");
 
-  const list = useMemo(() => ARTICLES.filter((a) => {
+  const list = useMemo(() => ALL_CONTENT.filter((a) => {
     if (group === "fav" && !favs.has(a.slug)) return false;
-    if (group !== "all" && group !== "fav" && !a.groups.includes(group)) return false;
+    if (group === "stories" && a.kind !== "story") return false;
+    if (group !== "all" && group !== "fav" && group !== "stories" && !a.groups.includes(group)) return false;
     const n = norm(q.trim());
     return !n || norm(a.title + " " + a.summary + " " + a.body.join(" ")).includes(n);
   }), [q, group, favs]);
 
-  const chips: { id: typeof group; label: string }[] = [{ id: "all", label: s.library.all }, { id: "fav", label: s.library.favorites }, ...AGE_GROUPS];
+  const chips: { id: typeof group; label: string }[] = [{ id: "all", label: s.library.all }, { id: "stories", label: "Histórias para dormir" }, { id: "fav", label: s.library.favorites }, ...AGE_GROUPS];
 
   return (
     <div>
@@ -58,6 +59,7 @@ function Biblioteca() {
                 <Link to="/app/biblioteca/$slug" params={{ slug: a.slug }} className="block pr-10">
                   <div className="mb-2 flex flex-wrap gap-1">
                     {locked && <PremiumBadge />}
+                    {a.kind === "story" && <span className="rounded-full bg-peach px-2 py-0.5 text-[11px] font-semibold text-peach-foreground">História</span>}
                     {a.groups.slice(0, 2).map((g) => <span key={g} className="rounded-full bg-sky px-2 py-0.5 text-[11px] text-sky-foreground">{AGE_GROUPS.find((x) => x.id === g)?.label}</span>)}
                   </div>
                   <h2 className="text-lg leading-tight">{a.title}</h2>
