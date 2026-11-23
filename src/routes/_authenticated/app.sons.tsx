@@ -34,7 +34,7 @@ function Sons() {
   const [now, setNow] = useState(Date.now());
   const [showPaywall, setShowPaywall] = useState(false);
 
-  useEffect(() => () => player.current?.stop(), []);
+  useEffect(() => () => player.current?.dispose(), []);
   useEffect(() => {
     if (!endsAt) return;
     const t = setInterval(() => {
