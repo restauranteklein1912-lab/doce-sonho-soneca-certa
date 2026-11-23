@@ -180,6 +180,8 @@ export const STORIES: Article[] = [
   { slug: "a-floresta-que-bocejava", title: "A Floresta que Bocejava", summary: "Os animais da floresta se despedem do dia com calma e carinho.", groups: ["2-5"], minutes: 4, kind: "story", body: ["Na Floresta do Sossego, o dia terminava sempre com um grande bocejo. Primeiro bocejava o urso, depois a raposa, em seguida os esquilos e até as corujas piscavam os olhos bem devagar.","Naquela noite, o pequeno ouriço Pipo ainda estava acordado. Ele caminhou pela trilha e encontrou seus amigos se preparando para dormir.","O urso ajeitava sua cama de folhas. A raposa procurava um lugar quentinho. Os esquilos guardavam as últimas sementinhas.","— Como vocês sabem que chegou a hora? — perguntou Pipo.","— A floresta fica mais silenciosa — respondeu o urso. — E nosso corpo pede descanso.","Pipo parou para escutar. Ouviu o riacho cantar baixinho, as folhas se encostarem e um grilo fazer sua música tranquila.","Ele voltou para sua toca, deu boa-noite aos amigos e se enrolou em uma caminha macia de folhas secas.","Do lado de fora, a Lua iluminava a trilha. A floresta inteira parecia respirar devagar.","Pipo deu um bocejo pequenininho. Depois outro. E, antes que a coruja terminasse sua canção, o ouriço já estava dormindo.","A Floresta do Sossego ficou em paz até o primeiro raio de sol chegar."] }
 ];
 
+export const ALL_CONTENT: Article[] = [...ARTICLES, ...STORIES];
+
 export function isArticleFree(a: Article) {
   return !!a.free;
 }
