@@ -1,107 +1,109 @@
-/** Sons gerados com Web Audio API (sem arquivos externos). */
+/** Sons de ruído gerados localmente e reproduzidos por HTMLAudioElement.
+ * O elemento de áudio é iniciado diretamente no toque do usuário, evitando
+ * bloqueios de autoplay do Safari/iOS com AudioContext suspenso.
+ */
 export type SoundId = "white" | "pink" | "rain" | "ocean";
 
-function noiseBuffer(ctx: AudioContext, kind: "white" | "pink" | "brown"): AudioBuffer {
-  const len = ctx.sampleRate * 4;
-  const buf = ctx.createBuffer(2, len, ctx.sampleRate);
-  for (let c = 0; c < 2; c++) {
-    const d = buf.getChannelData(c);
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, last = 0;
-    for (let i = 0; i < len; i++) {
-      const w = Math.random() * 2 - 1;
-      if (kind === "white") d[i] = w * 0.5;
-      else if (kind === "pink") {
-        b0 = 0.99886 * b0 + w * 0.0555179; b1 = 0.99332 * b1 + w * 0.0750759;
-        b2 = 0.969 * b2 + w * 0.153852; b3 = 0.8665 * b3 + w * 0.3104856;
-        b4 = 0.55 * b4 + w * 0.5329522; b5 = -0.7616 * b5 - w * 0.016898;
-        d[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.11;
-        b6 = w * 0.115926;
-      } else {
-        last = (last + 0.02 * w) / 1.02;
-        d[i] = last * 3.5;
-      }
-    }
-  }
-  return buf;
-}
+function createNoiseUrl(kind: SoundId): string {
+  const sampleRate = 22050;
+  const seconds = 8;
+  const length = sampleRate * seconds;
+  const bytesPerSample = 2;
+  const buffer = new ArrayBuffer(44 + length * bytesPerSample);
+  const view = new DataView(buffer);
 
-function createAudioContext(): AudioContext {
-  const AudioContextConstructor = window.AudioContext ||
-    (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-  if (!AudioContextConstructor) throw new Error("Web Audio API não está disponível neste navegador.");
-  return new AudioContextConstructor();
+  const writeText = (offset: number, value: string) => {
+    for (let i = 0; i < value.length; i++) view.setUint8(offset + i, value.charCodeAt(i));
+  };
+
+  writeText(0, "RIFF");
+  view.setUint32(4, 36 + length * bytesPerSample, true);
+  writeText(8, "WAVE");
+  writeText(12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * bytesPerSample, true);
+  view.setUint16(32, bytesPerSample, true);
+  view.setUint16(34, 16, true);
+  writeText(36, "data");
+  view.setUint32(40, length * bytesPerSample, true);
+
+  let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, brown = 0;
+  for (let i = 0; i < length; i++) {
+    const white = Math.random() * 2 - 1;
+    let sample: number;
+
+    if (kind === "white") {
+      sample = white * 0.55;
+    } else if (kind === "pink" || kind === "rain") {
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.969 * b2 + white * 0.153852;
+      b3 = 0.8665 * b3 + white * 0.3104856;
+      b4 = 0.55 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.016898;
+      const pink = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+      b6 = white * 0.115926;
+      const modulation = kind === "rain" ? 0.78 + 0.22 * Math.sin(2 * Math.PI * 0.16 * i / sampleRate) : 1;
+      sample = pink * (kind === "rain" ? 2.2 : 2.8) * modulation;
+    } else {
+      brown = (brown + 0.02 * white) / 1.02;
+      const modulation = 0.72 + 0.28 * Math.sin(2 * Math.PI * 0.09 * i / sampleRate);
+      sample = brown * 7 * modulation;
+    }
+
+    const clipped = Math.max(-1, Math.min(1, sample));
+    view.setInt16(44 + i * bytesPerSample, clipped * 32767, true);
+  }
+
+  return URL.createObjectURL(new Blob([buffer], { type: "audio/wav" }));
 }
 
 export class SoundPlayer {
-  private ctx: AudioContext | null = null;
-  private master: GainNode | null = null;
-  private nodes: AudioNode[] = [];
-  private sources: AudioScheduledSourceNode[] = [];
+  private audio: HTMLAudioElement | null = null;
+  private objectUrl: string | null = null;
 
   async play(id: SoundId, volume: number): Promise<void> {
     this.stop();
-    this.ctx = this.ctx ?? createAudioContext();
-    const ctx = this.ctx;
-    if (ctx.state !== "running") await ctx.resume();
-    if (ctx.state !== "running") throw new Error("O navegador bloqueou a reprodução de áudio.");
 
-    const master = ctx.createGain();
-    master.gain.setValueAtTime(0, ctx.currentTime);
-    master.gain.linearRampToValueAtTime(Math.max(0, Math.min(1, volume)), ctx.currentTime + 1.5);
-    master.connect(ctx.destination);
-    this.master = master;
+    const url = createNoiseUrl(id);
+    const audio = new Audio();
+    audio.preload = "auto";
+    audio.loop = true;
+    audio.volume = Math.max(0, Math.min(1, volume));
+    audio.src = url;
+    this.audio = audio;
+    this.objectUrl = url;
 
-    const src = ctx.createBufferSource();
-    src.loop = true;
-    this.sources.push(src);
-
-    if (id === "white" || id === "pink") {
-      src.buffer = noiseBuffer(ctx, id);
-      src.connect(master);
-    } else if (id === "rain") {
-      src.buffer = noiseBuffer(ctx, "pink");
-      const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 400;
-      const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 6000;
-      const g = ctx.createGain(); g.gain.value = 0.9;
-      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.15;
-      const lfoGain = ctx.createGain(); lfoGain.gain.value = 0.15;
-      lfo.connect(lfoGain).connect(g.gain);
-      src.connect(hp).connect(lp).connect(g).connect(master);
-      lfo.start();
-      this.sources.push(lfo);
-      this.nodes.push(hp, lp, g, lfoGain);
-    } else {
-      src.buffer = noiseBuffer(ctx, "brown");
-      const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 900;
-      const g = ctx.createGain(); g.gain.value = 0.5;
-      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.09;
-      const lfoGain = ctx.createGain(); lfoGain.gain.value = 0.45;
-      lfo.connect(lfoGain).connect(g.gain);
-      src.connect(lp).connect(g).connect(master);
-      lfo.start();
-      this.sources.push(lfo);
-      this.nodes.push(lp, g, lfoGain);
+    // Chamar play() antes de qualquer await é importante para o gesto do iOS.
+    try {
+      await audio.play();
+    } catch (error) {
+      this.stop();
+      throw error;
     }
-    src.start();
   }
 
-  setVolume(v: number) {
-    if (this.master && this.ctx?.state === "running") {
-      this.master.gain.setTargetAtTime(Math.max(0, Math.min(1, v)), this.ctx.currentTime, 0.1);
-    }
+  setVolume(volume: number) {
+    if (this.audio) this.audio.volume = Math.max(0, Math.min(1, volume));
   }
 
   stop() {
-    this.sources.forEach((s) => { try { s.stop(); } catch { /* já parado */ } s.disconnect(); });
-    this.nodes.forEach((n) => n.disconnect());
-    this.master?.disconnect();
-    this.sources = []; this.nodes = []; this.master = null;
+    if (this.audio) {
+      this.audio.pause();
+      this.audio.removeAttribute("src");
+      this.audio.load();
+      this.audio = null;
+    }
+    if (this.objectUrl) {
+      URL.revokeObjectURL(this.objectUrl);
+      this.objectUrl = null;
+    }
   }
 
   dispose() {
     this.stop();
-    const ctx = this.ctx;
-    this.ctx = null;
-    if (ctx && ctx.state !== "closed") void ctx.close();
   }
 }
