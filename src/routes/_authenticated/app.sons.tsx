@@ -48,16 +48,17 @@ function Sons() {
     if (!premium && !FREE_LIMITS.sounds.includes(id)) { setShowPaywall(true); return; }
     player.current = player.current ?? new SoundPlayer();
     if (playing === id) { player.current.stop(); setPlaying(null); setEndsAt(null); return; }
+    // Atualiza a interface imediatamente; a reprodução pode demorar a confirmar no Safari/iOS.
+    setPlaying(id);
+    setEndsAt(timer === "0" ? null : Date.now() + Number(timer) * 60000);
     try {
       await player.current.play(id, volume);
-      setPlaying(id);
     } catch {
       player.current.stop();
       setPlaying(null);
-      toast.error("Não foi possível reproduzir o som. Verifique o volume e tente novamente.");
-      return;
+      setEndsAt(null);
+      toast.error("Não foi possível reproduzir o som. Toque novamente e confira o volume do aparelho.");
     }
-    setEndsAt(timer === "0" ? null : Date.now() + Number(timer) * 60000);
   }
 
   const remaining = endsAt ? Math.max(0, Math.ceil((endsAt - now) / 1000)) : 0;
