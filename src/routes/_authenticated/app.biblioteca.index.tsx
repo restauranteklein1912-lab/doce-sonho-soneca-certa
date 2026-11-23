@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Heart, Search } from "lucide-react";
+import { Heart, Search, MoonStar, ChevronRight } from "lucide-react";
 import { useAppData } from "@/lib/app-data";
 import { useFavorites } from "@/lib/favorites";
 import { AGE_GROUPS, ALL_CONTENT, isArticleFree, type AgeGroup } from "@/lib/content";
@@ -37,6 +37,11 @@ function Biblioteca() {
   return (
     <div>
       <PageTitle title={s.library.title} />
+      <button type="button" onClick={() => setGroup("stories")} className="mb-5 flex w-full items-center gap-3 rounded-2xl border border-primary/20 bg-gradient-to-r from-peach/60 to-background p-4 text-left shadow-sm transition hover:shadow-md">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-peach text-peach-foreground"><MoonStar className="h-6 w-6" aria-hidden /></span>
+        <span className="min-w-0 flex-1"><span className="block font-semibold">Histórias para dormir</span><span className="mt-0.5 block text-sm text-muted-foreground">Contos delicados para compartilhar antes de dormir · Premium</span></span>
+        <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" aria-hidden />
+      </button>
       <div className="relative mb-3">
         <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
         <Input type="search" aria-label={s.library.search} placeholder={s.library.search} className="h-12 rounded-full pl-10" value={q} onChange={(e) => setQ(e.target.value)} />
