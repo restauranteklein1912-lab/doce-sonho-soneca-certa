@@ -1,6 +1,6 @@
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { HOTMART_CHECKOUT_MONTHLY_URL } from "@/config";
+
 import { s } from "@/i18n/strings";
 
 export function Paywall({ compact = false }: { compact?: boolean }) {
@@ -12,7 +12,7 @@ export function Paywall({ compact = false }: { compact?: boolean }) {
       <h2 className="text-lg">{s.paywall.title}</h2>
       <p className="max-w-sm text-sm text-muted-foreground">{s.paywall.desc}</p>
       <Button asChild>
-        <a href={HOTMART_CHECKOUT_MONTHLY_URL} target="_blank" rel="noopener noreferrer">{s.paywall.cta}</a>
+        <a href="/app/conta#plano">{s.paywall.cta}</a>
       </Button>
     </div>
   );
