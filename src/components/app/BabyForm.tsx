@@ -16,7 +16,17 @@ export function BabyForm({ onDone }: { onDone: (id: string) => void }) {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    const { data, error } = await supabase.from("babies").insert({ name: name.trim(), birth_date: birth }).select("id").single();
+    const { data: auth, error: authError } = await supabase.auth.getUser();
+    if (authError || !auth.user) {
+      setBusy(false);
+      toast.error("Sua sessão expirou. Entre novamente para cadastrar o bebê.");
+      return;
+    }
+    const { data, error } = await supabase
+      .from("babies")
+      .insert({ user_id: auth.user.id, name: name.trim(), birth_date: birth })
+      .select("id")
+      .single();
     setBusy(false);
     if (error) { toast.error(error.message.includes("FREE_BABY_LIMIT") ? s.onboarding.limit : s.common.error); return; }
     setName(""); setBirth("");
