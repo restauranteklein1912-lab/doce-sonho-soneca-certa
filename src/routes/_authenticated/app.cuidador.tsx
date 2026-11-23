@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Empty, ErrorState, Loading, PageTitle } from "@/components/app/States";
 import { s } from "@/i18n/strings";
+import { useAppData } from "@/lib/app-data";
+import { Paywall } from "@/components/app/Paywall";
 
 export const Route = createFileRoute("/_authenticated/app/cuidador")({
   head: () => ({ meta: [{ title: "Cuidador · Doce Sonho" }] }),
@@ -30,6 +32,7 @@ function Scale({ label, value, onChange }: { label: string; value: number; onCha
 }
 
 function Cuidador() {
+  const { premium } = useAppData();
   const qc = useQueryClient();
   const [rest, setRest] = useState(3);
   const [energy, setEnergy] = useState(3);
@@ -37,6 +40,7 @@ function Cuidador() {
   const [busy, setBusy] = useState(false);
   const q = useQuery({
     queryKey: ["checkins"],
+    enabled: premium,
     queryFn: async () => {
       const { data, error } = await supabase.from("caregiver_checkins").select("*").order("created_at", { ascending: false }).limit(14);
       if (error) throw error;
@@ -50,6 +54,8 @@ function Cuidador() {
     setBusy(false);
     if (error) toast.error(s.common.error); else { toast.success(s.common.saved); setNote(""); qc.invalidateQueries({ queryKey: ["checkins"] }); }
   }
+  if (!premium) return <div><PageTitle title={s.caregiver.title} subtitle={s.caregiver.subtitle} /><Paywall /></div>;
+
   return (
     <div className="grid gap-5 lg:grid-cols-2">
       <div>
