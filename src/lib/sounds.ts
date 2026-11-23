@@ -25,6 +25,13 @@ function noiseBuffer(ctx: AudioContext, kind: "white" | "pink" | "brown"): Audio
   return buf;
 }
 
+function createAudioContext(): AudioContext {
+  const AudioContextConstructor = window.AudioContext ||
+    (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  if (!AudioContextConstructor) throw new Error("Web Audio API não está disponível neste navegador.");
+  return new AudioContextConstructor();
+}
+
 export class SoundPlayer {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
@@ -33,13 +40,14 @@ export class SoundPlayer {
 
   async play(id: SoundId, volume: number): Promise<void> {
     this.stop();
-    const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    this.ctx = this.ctx ?? new Ctx();
+    this.ctx = this.ctx ?? createAudioContext();
     const ctx = this.ctx;
     if (ctx.state !== "running") await ctx.resume();
+    if (ctx.state !== "running") throw new Error("O navegador bloqueou a reprodução de áudio.");
+
     const master = ctx.createGain();
-    master.gain.value = 0;
-    master.gain.linearRampToValueAtTime(volume, ctx.currentTime + 1.5);
+    master.gain.setValueAtTime(0, ctx.currentTime);
+    master.gain.linearRampToValueAtTime(Math.max(0, Math.min(1, volume)), ctx.currentTime + 1.5);
     master.connect(ctx.destination);
     this.master = master;
 
@@ -78,7 +86,9 @@ export class SoundPlayer {
   }
 
   setVolume(v: number) {
-    if (this.master && this.ctx) this.master.gain.setTargetAtTime(v, this.ctx.currentTime, 0.1);
+    if (this.master && this.ctx?.state === "running") {
+      this.master.gain.setTargetAtTime(Math.max(0, Math.min(1, v)), this.ctx.currentTime, 0.1);
+    }
   }
 
   stop() {
@@ -86,5 +96,12 @@ export class SoundPlayer {
     this.nodes.forEach((n) => n.disconnect());
     this.master?.disconnect();
     this.sources = []; this.nodes = []; this.master = null;
+  }
+
+  dispose() {
+    this.stop();
+    const ctx = this.ctx;
+    this.ctx = null;
+    if (ctx && ctx.state !== "closed") void ctx.close();
   }
 }
