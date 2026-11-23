@@ -1,0 +1,17 @@
+{
+  "name": "Doce Sonho - Soneca Certa",
+  "short_name": "Doce Sonho",
+  "description": "Apoio ao sono do bebê e ao descanso de quem cuida.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF5E9",
+  "theme_color": "#FFF5E9",
+  "icons": [
+    {
+      "src": "/doce-sonho-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
