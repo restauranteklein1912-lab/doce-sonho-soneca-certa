@@ -25,8 +25,8 @@ export const Route = createFileRoute("/_authenticated/app/conta")({
   component: Conta,
 });
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return <section className="card-soft space-y-4 p-5"><h2 className="text-lg">{title}</h2>{children}</section>;
+function Section({ title, children, id }: { title: string; children: React.ReactNode; id?: string }) {
+  return <section id={id} className="card-soft scroll-mt-24 space-y-4 p-5"><h2 className="text-lg">{title}</h2>{children}</section>;
 }
 
 function Conta() {
@@ -96,7 +96,7 @@ function Conta() {
     <div className="mx-auto max-w-2xl space-y-4">
       <PageTitle title={s.account.title} subtitle={email} />
 
-      <Section title={s.account.plan}>
+      <Section id="plano" title={s.account.plan}>
         {requestedPlan && !premium && (
           <p className="rounded-xl bg-sky p-3 text-sm text-sky-foreground">
             Você escolheu o plano {requestedPlan}. Confira a opção abaixo e continue para o checkout quando estiver pronto.
