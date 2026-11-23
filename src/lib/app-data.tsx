@@ -34,7 +34,7 @@ export function useAppDataQuery() {
       if (ue || !u.user) throw ue ?? new Error("no user");
       const [p, b] = await Promise.all([
         supabase.from("profiles").select("*").eq("id", u.user.id).maybeSingle(),
-        supabase.from("babies").select("*").order("created_at"),
+        supabase.from("babies").select("*").eq("user_id", u.user.id).order("created_at"),
       ]);
       if (p.error) throw p.error;
       if (b.error) throw b.error;
