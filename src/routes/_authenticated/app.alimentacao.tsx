@@ -60,11 +60,6 @@ function Alimentacao() {
     return [...map.entries()];
   },[rows]);
 
-  // Fetch when this screen opens and after every mutation.
-  const fetchKey = `${baby?.id ?? ""}:${refresh}`;
-  const [loadedKey,setLoadedKey] = useState("");
-  if(fetchKey !== loadedKey && baby){setLoadedKey(fetchKey); void load();}
-
   async function remove() {
     if(!deleting)return;
     const {error}=await supabase.from("feeding_logs").delete().eq("id",deleting.id);
@@ -81,7 +76,7 @@ function Alimentacao() {
         {items.map(row=><li key={row.id} className="flex items-start gap-3 p-4">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-peach text-peach-foreground">{row.kind==="solids"?<Apple/>:row.kind==="breast"?<Baby/>:<Milk/>}</span>
           <div className="min-w-0 flex-1 text-sm"><p className="font-semibold">{labels[row.kind]} · <span className="tabular-nums">{time(row.started_at)}</span></p>
-            <p className="text-muted-foreground">{row.kind==="breast"?[`Lado: ${row.breast_side==="left"?"esquerdo":row.breast_side==="right"?"direito":row.breast_side==="both"?"ambos":"não informado"}`,row.duration_minutes!=null?`${row.duration_minutes} min`:null].filter(Boolean).join(" · "):row.kind==="solids"?[row.food,row.reaction&&row.reaction!=="none"?({accepted:"Aceitou",refused:"Recusou",possible_reaction:"Possível reação",other:"Outra observação"} as Record<string,string>)[row.reaction]:null].filter(Boolean).join(" · "):[row.amount_ml!=null?`${row.amount_ml} ml`:null,row.duration_minutes!=null?`${row.duration_minutes} min`:null].filter(Boolean).join(" · ")}</p>
+            <p className="text-muted-foreground">{row.kind==="breast"?[`Lado: ${row.breast_side==="left"?"esquerdo":row.breast_side==="right"?"direito":row.breast_side==="both"?"ambos":"não informado"}`,row.left_minutes!=null?`Esquerdo ${row.left_minutes} min`:null,row.right_minutes!=null?`Direito ${row.right_minutes} min`:null,row.duration_minutes!=null?`${row.duration_minutes} min no total`:null].filter(Boolean).join(" · "):row.kind==="solids"?[row.food,row.reaction&&row.reaction!=="none"?({accepted:"Aceitou",refused:"Recusou",possible_reaction:"Possível reação",other:"Outra observação"} as Record<string,string>)[row.reaction]:null].filter(Boolean).join(" · "):[row.amount_ml!=null?`${row.amount_ml} ml`:null,row.duration_minutes!=null?`${row.duration_minutes} min`:null].filter(Boolean).join(" · ")}</p>
             {row.notes&&<p className="mt-1 break-words text-muted-foreground">{row.notes}</p>}
           </div><div className="flex shrink-0 gap-1"><Button size="icon" variant="ghost" aria-label="Editar" onClick={()=>setEditing(row)}><Pencil/></Button><Button size="icon" variant="ghost" aria-label="Excluir" onClick={()=>setDeleting(row)}><Trash2/></Button></div>
         </li>)}
