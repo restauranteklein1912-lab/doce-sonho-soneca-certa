@@ -5,6 +5,7 @@ import { AppDataProvider, useAppData, useAppDataQuery } from "@/lib/app-data";
 import { Logo } from "@/components/app/Logo";
 import { Disclaimer } from "@/components/app/Footer";
 import { BabyForm } from "@/components/app/BabyForm";
+import { SubscriptionGate } from "@/components/app/SubscriptionGate";
 import { ErrorState, Loading } from "@/components/app/States";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -40,8 +41,12 @@ function AppLayout() {
 }
 
 function Shell() {
-  const { babies, setBabyId, refresh } = useAppData();
-  if (babies.length === 0) {
+  const { premium, babies, setBabyId, refresh } = useAppData();
+  const pathname = useRouterState({ select: (r) => r.location.pathname });
+  if (!premium && !pathname.startsWith("/app/conta")) {
+    return <SubscriptionGate />;
+  }
+  if (premium && babies.length === 0) {
     return (
       <div className="flex min-h-screen flex-col">
         <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-5 py-10">

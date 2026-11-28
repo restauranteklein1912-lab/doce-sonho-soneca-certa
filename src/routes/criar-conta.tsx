@@ -11,9 +11,9 @@ export const Route = createFileRoute("/criar-conta")({
   head: () => ({
     meta: [
       { title: "Criar conta · Doce Sonho" },
-      { name: "description", content: "Crie sua conta grátis no Doce Sonho." },
+      { name: "description", content: "Crie sua conta no Doce Sonho." },
       { property: "og:title", content: "Criar conta · Doce Sonho" },
-      { property: "og:description", content: "Crie sua conta grátis no Doce Sonho." },
+      { property: "og:description", content: "Crie sua conta no Doce Sonho." },
     ],
   }),
   component: CriarConta,

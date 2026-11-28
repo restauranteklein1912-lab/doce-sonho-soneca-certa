@@ -114,15 +114,15 @@ function Conta() {
             <div className="flex w-full flex-col gap-2 sm:w-auto sm:min-w-56">
               <Button asChild className="w-full">
                 <a href={HOTMART_CHECKOUT_MONTHLY_URL} target="_blank" rel="noopener noreferrer">
-                  {requestedPlan === "mensal" ? "Plano escolhido · Mensal · R$ 19,90" : "Mensal · R$ 19,90"}
+                  {requestedPlan === "mensal" ? s.gate.chosen(s.gate.monthly) : s.gate.monthly}
                 </a>
               </Button>
               <Button asChild variant="outline" className="w-full">
                 <a href={HOTMART_CHECKOUT_ANNUAL_URL} target="_blank" rel="noopener noreferrer">
-                  {requestedPlan === "anual" ? "Plano escolhido · Anual · R$ 149,90" : "Anual · R$ 149,90"}
+                  {requestedPlan === "anual" ? s.gate.chosen(s.gate.annual) : s.gate.annual}
                 </a>
               </Button>
-              <p className="text-center text-xs text-muted-foreground">7 dias grátis nos dois planos</p>
+              <p className="text-center text-xs text-muted-foreground">{s.gate.trial}</p>
             </div>
           )}
         </div>
@@ -137,9 +137,9 @@ function Conta() {
             </li>
           ))}
         </ul>
-        {premium || babies.length < 1 ? (
+        {premium && (
           <Button variant="soft" onClick={() => setAddOpen(true)}><Plus /> {s.onboarding.addBaby}</Button>
-        ) : <p className="text-xs text-muted-foreground">{s.onboarding.limit}</p>}
+        )}
       </Section>
 
       <Section title={s.account.profile}>
