@@ -148,7 +148,6 @@ export interface FileRoutesByFullPath {
   '/app/cuidador': typeof AuthenticatedAppCuidadorRoute
   '/app/diario': typeof AuthenticatedAppDiarioRoute
   '/app/alimentacao': typeof AuthenticatedAppAlimentacaoRoute
-  '/app/alimentacao': typeof AuthenticatedAppAlimentacaoRoute
   '/app/hora-de-dormir': typeof AuthenticatedAppHoraDeDormirRoute
   '/app/relatorios': typeof AuthenticatedAppRelatoriosRoute
   '/app/rotina': typeof AuthenticatedAppRotinaRoute
