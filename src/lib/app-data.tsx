@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
@@ -29,9 +29,13 @@ export function isPremiumProfile(p: Profile | null | undefined) {
 export function useAppDataQuery() {
   return useQuery({
     queryKey: ["app-data"],
+    refetchInterval: (query) => isPremiumProfile(query.state.data?.profile) ? 60000 : 15000,
+    refetchOnWindowFocus: "always",
     queryFn: async () => {
       const { data: u, error: ue } = await supabase.auth.getUser();
       if (ue || !u.user) throw ue ?? new Error("no user");
+      const { error: reconcileError } = await supabase.rpc("reconcile_my_premium");
+      if (reconcileError) throw reconcileError;
       const [p, b] = await Promise.all([
         supabase.from("profiles").select("*").eq("id", u.user.id).maybeSingle(),
         supabase.from("babies").select("*").eq("user_id", u.user.id).order("created_at"),
@@ -46,6 +50,15 @@ export function useAppDataQuery() {
 export function AppDataProvider({ data, children }: { data: NonNullable<ReturnType<typeof useAppDataQuery>["data"]>; children: ReactNode }) {
   const qc = useQueryClient();
   const [babyId, setBabyIdState] = useState<string | null>(null);
+  const premium = isPremiumProfile(data.profile);
+  const previousPremium = useRef(premium);
+  useEffect(() => {
+    if (previousPremium.current !== premium) {
+      previousPremium.current = premium;
+      // Re-fetch existing diary/library queries when their access changes.
+      void qc.invalidateQueries({ predicate: (query) => query.queryKey[0] !== "app-data" });
+    }
+  }, [premium, qc]);
   useEffect(() => {
     setBabyIdState(localStorage.getItem("ds-baby"));
   }, []);

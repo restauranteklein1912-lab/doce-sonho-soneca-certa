@@ -33,4 +33,7 @@ use the editor.
 - All UI copy lives in `src/i18n/strings.ts` (library articles in `src/lib/content.ts`) so the app can be translated; never hardcode interface text in components.
 - Premium limits are enforced in the database (RLS + `is_premium()` + baby-limit trigger); UI gating in `src/config.ts` is only presentation.
 - Hotmart webhook is the TanStack server route `/api/public/hotmart-webhook` (not an Edge Function), verified by the `HOTMART_HOTTOK` secret.
+- Persist Hotmart entitlement changes through the service-only atomic `process_hotmart_event` RPC and transaction/event ledger; original approval timestamps and transaction deduplication prevent replay extensions.
+- Link pending entitlements under the same email advisory lock on profile creation and through the self-only `reconcile_my_premium` RPC; this closes signup races without exposing payment rows.
+- Refresh app-data while waiting for payment and on window focus; reconcile pending purchases before reading the profile so access changes do not require signing in again.
 - Sleep reference table and schedule math live in `src/lib/sleep.ts` with tests next to it.

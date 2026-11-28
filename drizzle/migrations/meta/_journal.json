@@ -8,6 +8,13 @@
       "when": 1795033992822,
       "tag": "0000_doce_sonho_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795862992444,
+      "tag": "0001_hotmart_atomic_entitlements",
+      "breakpoints": true
     }
   ]
 }

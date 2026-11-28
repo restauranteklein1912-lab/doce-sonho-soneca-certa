@@ -17,10 +17,11 @@ export function premiumActionFor(event: string): "activate" | "deactivate" | nul
   return null;
 }
 
-export function premiumDaysForOffer(offerCode?: string): number {
+export function premiumDaysForOffer(offerCode?: string): number | null {
   // Códigos públicos das ofertas configuradas no checkout da Doce Sonho.
   if (offerCode === "gjv109ka") return 370; // anual: 365 dias + margem técnica
-  return 35; // mensal: 30 dias + margem técnica
+  if (offerCode === "i1qgmmj1") return 35; // mensal: 30 dias + margem técnica
+  return null; // Não conceder acesso a ofertas desconhecidas.
 }
 
 export function safeEqual(a: string, b: string): boolean {

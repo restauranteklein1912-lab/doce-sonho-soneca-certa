@@ -160,6 +160,42 @@ export type Database = {
         }
         Relationships: []
       }
+      hotmart_events: {
+        Row: {
+          action: string
+          email: string
+          event: string
+          event_id: string | null
+          occurred_at: string
+          outcome: string
+          premium_until: string | null
+          received_at: string
+          transaction: string
+        }
+        Insert: {
+          action: string
+          email: string
+          event: string
+          event_id?: string | null
+          occurred_at: string
+          outcome: string
+          premium_until?: string | null
+          received_at?: string
+          transaction: string
+        }
+        Update: {
+          action?: string
+          email?: string
+          event?: string
+          event_id?: string | null
+          occurred_at?: string
+          outcome?: string
+          premium_until?: string | null
+          received_at?: string
+          transaction?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           baby_age_months: number | null
@@ -382,6 +418,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_pending_premium: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -390,6 +427,20 @@ export type Database = {
         Returns: boolean
       }
       is_premium: { Args: { _user_id: string }; Returns: boolean }
+      process_hotmart_event: {
+        Args: {
+          _approved_at: string
+          _email: string
+          _event: string
+          _event_id: string
+          _occurred_at: string
+          _offer: string
+          _status: string
+          _transaction: string
+        }
+        Returns: Json
+      }
+      reconcile_my_premium: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
