@@ -14,6 +14,12 @@ export type Database = {
   }
   public: {
     Tables: {
+      feeding_logs: {
+        Row: { id: string; user_id: string; baby_id: string; kind: string; started_at: string; duration_minutes: number | null; breast_side: string | null; left_minutes: number | null; right_minutes: number | null; amount_ml: number | null; food: string | null; reaction: string | null; notes: string | null; created_at: string }
+        Insert: { id?: string; user_id?: string; baby_id: string; kind: string; started_at?: string; duration_minutes?: number | null; breast_side?: string | null; left_minutes?: number | null; right_minutes?: number | null; amount_ml?: number | null; food?: string | null; reaction?: string | null; notes?: string | null; created_at?: string }
+        Update: { id?: string; user_id?: string; baby_id?: string; kind?: string; started_at?: string; duration_minutes?: number | null; breast_side?: string | null; left_minutes?: number | null; right_minutes?: number | null; amount_ml?: number | null; food?: string | null; reaction?: string | null; notes?: string | null; created_at?: string }
+        Relationships: [{ foreignKeyName: "feeding_logs_baby_id_fkey"; columns: ["baby_id"]; isOneToOne: false; referencedRelation: "babies"; referencedColumns: ["id"] }]
+      }
       babies: {
         Row: {
           birth_date: string
