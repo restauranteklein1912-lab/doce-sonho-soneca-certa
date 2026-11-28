@@ -15,6 +15,13 @@
       "when": 1795862992444,
       "tag": "0001_hotmart_atomic_entitlements",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1796000000000,
+      "tag": "0002_feeding_diary",
+      "breakpoints": true
     }
   ]
 }
