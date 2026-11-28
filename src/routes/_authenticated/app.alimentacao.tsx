@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Apple, Baby, Milk, Pencil, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,19 +40,20 @@ function Alimentacao() {
   const [deleting,setDeleting] = useState<Feeding|null>(null);
   const [refresh,setRefresh] = useState(0);
 
-  useMemo(() => { void refresh; }, [refresh]);
-  async function load() {
-    if (!baby) return;
-    setLoading(true); setError(false);
-    const {data,error} = await supabase.from("feeding_logs").select("*").eq("baby_id",baby.id).order("started_at",{ascending:false}).limit(300);
-    if(error){setError(true);setRows([]);} else setRows((data??[]) as Feeding[]);
-    setLoading(false);
-  }
-  // Load again whenever the selected baby changes or a record is saved/deleted.
-  useMemo(() => { void baby?.id; }, [baby?.id]);
-  const [babyKey,setBabyKey] = useState(baby?.id);
-  if (baby?.id !== babyKey) setBabyKey(baby?.id);
-  // The effect is intentionally driven by the selected baby and refresh counter.
+  useEffect(() => {
+    let active = true;
+    async function load() {
+      if (!baby) { setRows([]); setLoading(false); return; }
+      setLoading(true); setError(false);
+      const result = await supabase.from("feeding_logs").select("*").eq("baby_id",baby.id).order("started_at",{ascending:false}).limit(300);
+      if (!active) return;
+      if(result.error){setError(true);setRows([]);} else setRows((result.data??[]) as Feeding[]);
+      setLoading(false);
+    }
+    void load();
+    return () => { active = false; };
+  },[baby?.id,refresh]);
+
   const grouped = useMemo(() => {
     const map = new Map<string,Feeding[]>();
     for(const row of rows){const key=localDayKey(new Date(row.started_at));map.set(key,[...(map.get(key)??[]),row]);}
