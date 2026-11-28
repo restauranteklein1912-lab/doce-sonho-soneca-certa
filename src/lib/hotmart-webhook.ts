@@ -23,7 +23,7 @@ export const HotmartPayload = z.object({
 export type HotmartCommand = {
   _transaction: string;
   _event: string;
-  _event_id: string | null;
+  _event_id: string;
   _email: string;
   _status: string;
   _offer: string;
@@ -86,7 +86,7 @@ export async function handleHotmartWebhook(
     const result = await processEvent({
       _transaction: purchase.transaction,
       _event: payload.event,
-      _event_id: payload.id ?? null,
+      _event_id: payload.id ?? "",
       _email: email,
       _status: purchase.status ?? "",
       _offer: purchase.offer?.code ?? "",
