@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
-import { BarChart3, BookOpen, CalendarClock, Heart, Home, ListChecks, Menu, Music, NotebookPen, UserRound } from "lucide-react";
+import { Apple, BarChart3, BookOpen, CalendarClock, Heart, Home, ListChecks, Menu, Music, NotebookPen, UserRound } from "lucide-react";
 import { AppDataProvider, useAppData, useAppDataQuery } from "@/lib/app-data";
 import { Logo } from "@/components/app/Logo";
 import { Disclaimer } from "@/components/app/Footer";
@@ -20,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/app")({
 const NAV = [
   { to: "/app", label: s.nav.home, icon: Home, exact: true },
   { to: "/app/diario", label: s.nav.diary, icon: NotebookPen },
+  { to: "/app/alimentacao", label: s.nav.feeding, icon: Apple },
   { to: "/app/relatorios", label: s.nav.reports, icon: BarChart3 },
   { to: "/app/sons", label: s.nav.sounds, icon: Music },
   { to: "/app/rotina", label: s.nav.routine, icon: CalendarClock },
