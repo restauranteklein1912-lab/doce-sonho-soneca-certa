@@ -21,6 +21,7 @@ import { Route as AuthenticatedAppBibliotecaRouteImport } from './routes/_authen
 import { Route as AuthenticatedAppContaRouteImport } from './routes/_authenticated/app.conta'
 import { Route as AuthenticatedAppCuidadorRouteImport } from './routes/_authenticated/app.cuidador'
 import { Route as AuthenticatedAppDiarioRouteImport } from './routes/_authenticated/app.diario'
+import { Route as AuthenticatedAppAlimentacaoRouteImport } from './routes/_authenticated/app.alimentacao'
 import { Route as AuthenticatedAppHoraDeDormirRouteImport } from './routes/_authenticated/app.hora-de-dormir'
 import { Route as AuthenticatedAppRelatoriosRouteImport } from './routes/_authenticated/app.relatorios'
 import { Route as AuthenticatedAppRotinaRouteImport } from './routes/_authenticated/app.rotina'
@@ -85,6 +86,11 @@ const AuthenticatedAppCuidadorRoute =
     path: '/cuidador',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppAlimentacaoRoute = AuthenticatedAppAlimentacaoRouteImport.update({
+  id: '/alimentacao',
+  path: '/alimentacao',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppDiarioRoute = AuthenticatedAppDiarioRouteImport.update({
   id: '/diario',
   path: '/diario',
@@ -141,6 +147,8 @@ export interface FileRoutesByFullPath {
   '/app/conta': typeof AuthenticatedAppContaRoute
   '/app/cuidador': typeof AuthenticatedAppCuidadorRoute
   '/app/diario': typeof AuthenticatedAppDiarioRoute
+  '/app/alimentacao': typeof AuthenticatedAppAlimentacaoRoute
+  '/app/alimentacao': typeof AuthenticatedAppAlimentacaoRoute
   '/app/hora-de-dormir': typeof AuthenticatedAppHoraDeDormirRoute
   '/app/relatorios': typeof AuthenticatedAppRelatoriosRoute
   '/app/rotina': typeof AuthenticatedAppRotinaRoute
@@ -181,6 +189,7 @@ export interface FileRoutesById {
   '/_authenticated/app/conta': typeof AuthenticatedAppContaRoute
   '/_authenticated/app/cuidador': typeof AuthenticatedAppCuidadorRoute
   '/_authenticated/app/diario': typeof AuthenticatedAppDiarioRoute
+  '/_authenticated/app/alimentacao': typeof AuthenticatedAppAlimentacaoRoute
   '/_authenticated/app/hora-de-dormir': typeof AuthenticatedAppHoraDeDormirRoute
   '/_authenticated/app/relatorios': typeof AuthenticatedAppRelatoriosRoute
   '/_authenticated/app/rotina': typeof AuthenticatedAppRotinaRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
     | '/app/conta'
     | '/app/cuidador'
     | '/app/diario'
+    | '/app/alimentacao'
     | '/app/hora-de-dormir'
     | '/app/relatorios'
     | '/app/rotina'
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/conta'
     | '/_authenticated/app/cuidador'
     | '/_authenticated/app/diario'
+    | '/_authenticated/app/alimentacao'
     | '/_authenticated/app/hora-de-dormir'
     | '/_authenticated/app/relatorios'
     | '/_authenticated/app/rotina'
@@ -341,6 +352,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppCuidadorRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/alimentacao': {
+      id: '/_authenticated/app/alimentacao'
+      path: '/alimentacao'
+      fullPath: '/app/alimentacao'
+      preLoaderRoute: typeof AuthenticatedAppAlimentacaoRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/diario': {
       id: '/_authenticated/app/diario'
       path: '/diario'
@@ -421,6 +439,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppContaRoute: typeof AuthenticatedAppContaRoute
   AuthenticatedAppCuidadorRoute: typeof AuthenticatedAppCuidadorRoute
   AuthenticatedAppDiarioRoute: typeof AuthenticatedAppDiarioRoute
+  AuthenticatedAppAlimentacaoRoute: typeof AuthenticatedAppAlimentacaoRoute
   AuthenticatedAppHoraDeDormirRoute: typeof AuthenticatedAppHoraDeDormirRoute
   AuthenticatedAppRelatoriosRoute: typeof AuthenticatedAppRelatoriosRoute
   AuthenticatedAppRotinaRoute: typeof AuthenticatedAppRotinaRoute
@@ -433,6 +452,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppContaRoute: AuthenticatedAppContaRoute,
   AuthenticatedAppCuidadorRoute: AuthenticatedAppCuidadorRoute,
   AuthenticatedAppDiarioRoute: AuthenticatedAppDiarioRoute,
+  AuthenticatedAppAlimentacaoRoute: AuthenticatedAppAlimentacaoRoute,
   AuthenticatedAppHoraDeDormirRoute: AuthenticatedAppHoraDeDormirRoute,
   AuthenticatedAppRelatoriosRoute: AuthenticatedAppRelatoriosRoute,
   AuthenticatedAppRotinaRoute: AuthenticatedAppRotinaRoute,
