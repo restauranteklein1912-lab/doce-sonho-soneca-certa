@@ -1,8 +1,6 @@
-import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { Logo } from "./Logo";
 import { Disclaimer } from "./Footer";
-import { s } from "@/i18n/strings";
 
 export function AuthLayout({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
   return (
@@ -14,9 +12,6 @@ export function AuthLayout({ title, subtitle, children }: { title: string; subti
           {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
           <div className="mt-6">{children}</div>
         </div>
-        <p className="mt-6 text-center text-sm">
-          <Link to="/calculadora" className="text-primary-strong underline-offset-4 hover:underline">{s.auth.tryCalculator}</Link>
-        </p>
       </main>
       <Disclaimer />
     </div>
