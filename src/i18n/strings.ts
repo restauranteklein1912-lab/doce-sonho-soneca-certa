@@ -33,6 +33,7 @@ export const s = {
   nav: {
     home: "Início",
     diary: "Diário",
+    feeding: "Alimentação",
     reports: "Relatórios",
     routine: "Rotina",
     bedtime: "Hora de dormir",
